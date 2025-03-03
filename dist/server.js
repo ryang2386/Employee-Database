@@ -26,41 +26,44 @@ function performDuties() {
                 console.table(res.rows);
                 performDuties();
             });
-            if (choices.viewALL === 'Add Employee') {
-                addEmployee();
-            }
-            ;
-            if (choices.viewALL === 'View All Roles') {
-                pool.query('SELECT * FROM role', (err, res) => {
-                    if (err) {
-                        console.error('There is no roles table.', err.name);
-                        return;
-                    }
-                    console.table(res.rows);
-                    performDuties();
-                });
-            }
-            if (choices.viewALL === 'View All Departments') {
-                pool.query('SELECT * FROM department', (err, res) => {
-                    if (err) {
-                        console.error('There is no departments table.', err.name);
-                        return;
-                    }
-                    console.table(res.rows);
-                    performDuties();
-                });
-            }
-            if (choices.viewALL === 'Quit') {
-                process.exit(0);
-            }
         }
-        ;
+        else if (choices.viewALL === 'Add Employee') {
+            addEmployee();
+        }
+        else if (choices.viewALL === 'View All Roles') {
+            pool.query('SELECT * FROM role', (err, res) => {
+                if (err) {
+                    console.error('There is no roles table.', err.name);
+                    return;
+                }
+                console.table(res.rows);
+                performDuties();
+            });
+        }
+        else if (choices.viewALL === 'View All Departments') {
+            pool.query('SELECT * FROM department', (err, res) => {
+                if (err) {
+                    console.error('There is no departments table.', err.name);
+                    return;
+                }
+                console.table(res.rows);
+                performDuties();
+            });
+        }
+        else {
+            process.exit(0);
+        }
     });
 }
 ;
 function addEmployee() {
     inquirer
         .prompt([
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Enter employee id:',
+        },
         {
             type: 'input',
             name: 'first_name',
@@ -83,7 +86,8 @@ function addEmployee() {
         },
     ])
         .then((answers) => {
-        pool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.manager_id], (err, _res) => {
+        console.log(answers.id, answers.first_name, answers.last_name, answers.role_id, answers.manager_id);
+        pool.query(`INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES (${answers.id}, '${answers.first_name}', '${answers.last_name}', ${answers.role_id}, ${answers.manager_id})`, (err, _res) => {
             if (err) {
                 console.error('Error adding employee:', err.name);
                 return;

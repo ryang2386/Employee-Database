@@ -31,10 +31,10 @@ inquirer
                 console.table(res.rows);
                 performDuties();
             });
-        if (choices.viewALL === 'Add Employee') {
+        } else if (choices.viewALL === 'Add Employee') {
             addEmployee();
-        };
-        if (choices.viewALL === 'View All Roles') {
+        }
+          else if (choices.viewALL === 'View All Roles') {
             pool.query('SELECT * FROM role', (err: Error, res: QueryResult) => {
                 if (err) {
                     console.error('There is no roles table.', err.name);
@@ -44,7 +44,7 @@ inquirer
                 performDuties();
              });
         }
-            if (choices.viewALL === 'View All Departments') {
+           else if (choices.viewALL === 'View All Departments') {
                 pool.query('SELECT * FROM department', (err: Error, res: QueryResult) => {
                 if (err) {
                     console.error('There is no departments table.', err.name);
@@ -53,18 +53,22 @@ inquirer
                 console.table(res.rows);
                 performDuties();
             });
-        }
-            if (choices.viewALL === 'Quit') {
+        } else 
+         {
                 process.exit(0);
             }
 
-                 };
-                })
+                 });
             };
 
 function addEmployee(): void {
     inquirer
     .prompt([
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Enter employee id:',
+        },
         {
             type: 'input',
             name: 'first_name',
@@ -87,7 +91,8 @@ function addEmployee(): void {
         },
     ])
     .then((answers) => {
-        pool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.manager_id], (err: Error, _res: QueryResult) => {
+        // console.log(answers.id, answers.first_name, answers.last_name, answers.role_id, answers.manager_id);
+        pool.query(`INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES (${answers.id}, '${answers.first_name}', '${answers.last_name}', ${answers.role_id}, ${answers.manager_id})`, (err: Error, _res: QueryResult) => {
             if (err) {
                 console.error('Error adding employee:', err.name);
                 return;
