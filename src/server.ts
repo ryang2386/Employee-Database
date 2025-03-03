@@ -11,13 +11,14 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+function performDuties(): void {
 inquirer
   .prompt([
     {
       type: 'list',
       name: 'viewALL',
       message: 'What would you like to do?',
-      choices: ['View All Employees', 'View All Roles', 'View All Departments'],
+      choices: ['View All Employees', 'View All Roles', 'View All Departments', 'Quit'],
     },
     ])
     .then((choices) => {
@@ -28,6 +29,7 @@ inquirer
                     return;
                 }
                 console.table(res.rows);
+                performDuties();
             });
         }
         if (choices.viewALL === 'View All Roles') {
@@ -37,8 +39,8 @@ inquirer
                     return;
                 }
                 console.table(res.rows);
-                
-            });
+                performDuties();
+             });
         }
             if (choices.viewALL === 'View All Departments') {
                 pool.query('SELECT * FROM department', (err: Error, res: QueryResult) => {
@@ -47,10 +49,18 @@ inquirer
                     return;
                 }
                 console.table(res.rows);
-
+                performDuties();
             });
         }
+            if (choices.viewALL === 'Quit') {
+                process.exit(0);
+            }
+
                  });
+                };
+                
+
+performDuties();
 
 app.use((_req, res) => {
         res.status(404).end();
