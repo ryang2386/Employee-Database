@@ -18,7 +18,7 @@ inquirer
       type: 'list',
       name: 'viewALL',
       message: 'What would you like to do?',
-      choices: ['View All Employees', 'View All Roles', 'View All Departments', 'Quit'],
+      choices: ['View All Employees', 'Add Employee', 'View All Roles', 'View All Departments', 'Quit'],
     },
     ])
     .then((choices) => {
@@ -31,7 +31,9 @@ inquirer
                 console.table(res.rows);
                 performDuties();
             });
-        }
+        if (choices.viewALL === 'Add Employee') {
+            addEmployee();
+        };
         if (choices.viewALL === 'View All Roles') {
             pool.query('SELECT * FROM role', (err: Error, res: QueryResult) => {
                 if (err) {
@@ -56,8 +58,46 @@ inquirer
                 process.exit(0);
             }
 
-                 });
-                };
+                 };
+                })
+            };
+
+function addEmployee(): void {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'Enter first name:',
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'Enter last name:',
+        },
+        {
+            type: 'input',
+            name: 'role_id',
+            message: 'Enter role id:',
+        },
+        {
+            type: 'input',
+            name: 'manager_id',
+            message: 'Enter manager id:',
+        },
+    ])
+    .then((answers) => {
+        pool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.manager_id], (err: Error, _res: QueryResult) => {
+            if (err) {
+                console.error('Error adding employee:', err.name);
+                return;
+            }
+            console.log('Employee added successfully.');
+            performDuties();
+    });
+    });
+};
+
                 
 
 performDuties();
