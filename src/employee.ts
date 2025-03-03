@@ -13,3 +13,5 @@ class Employee {
         this.manager_id = manager_id;
     }
 }
+
+export { Employee };

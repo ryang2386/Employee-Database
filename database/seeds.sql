@@ -32,11 +32,11 @@ SELECT * FROM department;
 SELECT * FROM role;
 SELECT * FROM employee;
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES
-(10, 'John', 'Doe', 4, 4);
+SELECT first_name, last_name FROM employee;
 
-
-
-SELECT * FROM employee;
+-- INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES
+-- (10, 'John', 'Doe', 4, 4);
 
 DELETE FROM employee WHERE id = 10;
+
+DELETE FROM department WHERE id = 7;
