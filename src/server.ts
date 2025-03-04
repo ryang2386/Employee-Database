@@ -92,11 +92,6 @@ function addEmployee(): void {
     .prompt([
         {
             type: 'input',
-            name: 'id',
-            message: 'Enter employee id:',
-        },
-        {
-            type: 'input',
             name: 'first_name',
             message: 'Enter first name:',
         },
@@ -117,12 +112,14 @@ function addEmployee(): void {
         },
     ])
     .then((answers) => {
-        pool.query(`INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES (${answers.id}, '${answers.first_name}', '${answers.last_name}', ${answers.role_id}, ${answers.manager_id})`, (err: Error, _res: QueryResult) => {
+        pool.query(`INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES (${employee.length+1}, '${answers.first_name}', '${answers.last_name}', ${answers.role_id}, ${answers.manager_id})`, (err: Error, _res: QueryResult) => {
             if (err) {
                 console.error('Error adding employee:', err.name);
                 return;
             }
             console.log('Employee added successfully.');
+            const newEmployee = new Employee(employee.length +1, answers.first_name, answers.last_name, employee.length+1, answers.manager_id);
+            employee.push(newEmployee);
             performDuties();
         });
     });
@@ -138,7 +135,7 @@ function addDepartment(): void {
         },
     ])
         .then((answers) => {
-            console.log(department.length + 1);
+            // console.log(department.length + 1);
             pool.query(`INSERT INTO department (id, name) VALUES (${department.length +1}, '${answers.department}')`, (err: Error, _res: QueryResult) => {
                 if (err) {
                     console.error('Error adding department:', err.name);
