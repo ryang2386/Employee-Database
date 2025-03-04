@@ -138,12 +138,15 @@ function addDepartment(): void {
         },
     ])
         .then((answers) => {
-            pool.query(`INSERT INTO department (name) VALUES ('${answers.department}')`, (err: Error, _res: QueryResult) => {
+            console.log(department.length + 1);
+            pool.query(`INSERT INTO department (id, name) VALUES (${department.length +1}, '${answers.department}')`, (err: Error, _res: QueryResult) => {
                 if (err) {
                     console.error('Error adding department:', err.name);
                     return;
                 }
                 console.log('Department added successfully.');
+                const newDepartment = new Department(department.length + 1, answers.department);
+                department.push(newDepartment);
                 performDuties();
             });
         });
