@@ -39,6 +39,16 @@ UPDATE employee SET salary = 85000 WHERE role_id = 8;
 UPDATE employee SET salary = 120000 WHERE role_id = 9;
 ALTER TABLE employee DROP COLUMN role_id;
 ALTER TABLE employee DROP COLUMN manager_id;
+alter table role add column department VARCHAR(100);
+-- insert values into department column on role table based on department_id
+UPDATE role SET department = 'Marketing' WHERE department_id = 1;
+UPDATE role SET department = 'Software Development' WHERE department_id = 2;
+UPDATE role SET department = 'Engineering' WHERE department_id = 3;
+UPDATE role SET department = 'Finance' WHERE department_id = 4;
+UPDATE role SET department = 'Human Resources' WHERE department_id = 5;
+UPDATE role SET department = 'Project Management' WHERE department_id = 6;
+ALTER TABLE role DROP COLUMN department_id;
+
 select * from employee order by id ASC;
 select * from employee;
 select * from role;

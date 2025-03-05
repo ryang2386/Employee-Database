@@ -1,5 +1,5 @@
 class Role {
-    constructor(id, title, salary, department_id) {
+    constructor(id, title, salary, department) {
         Object.defineProperty(this, "id", {
             enumerable: true,
             configurable: true,
@@ -18,7 +18,7 @@ class Role {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "department_id", {
+        Object.defineProperty(this, "department", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -27,7 +27,7 @@ class Role {
         this.id = id;
         this.title = title;
         this.salary = salary;
-        this.department_id = department_id;
+        this.department = department;
     }
 }
 export { Role };

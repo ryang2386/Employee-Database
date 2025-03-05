@@ -25,7 +25,7 @@ inquirer
       type: 'list',
       name: 'viewALL',
       message: 'What would you like to do?',
-      choices: ['View All Employees', 'Add Employee', 'View All Roles', 'View All Departments', 'Add Department', 'Quit'],
+      choices: ['View All Employees', 'Add Employee', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
     },
     ])
     .then((choices) => {
@@ -41,14 +41,14 @@ inquirer
                         employee.push(new Employee(row.id, row.first_name, row.last_name, row.title, row.department, row.salary, row.manager));
                     }
                 }
-                console.log(employee);
+                // console.log(employee);
                 performDuties();
             });
         } else if (choices.viewALL === 'Add Employee') {
             addEmployee();
         }
           else if (choices.viewALL === 'View All Roles') {
-            pool.query('SELECT * FROM role', (err: Error, res: QueryResult) => {
+            pool.query('select * from role order by id ASC;', (err: Error, res: QueryResult) => {
                 if (err) {
                     console.error('There is no roles table.', err.name);
                     return;
@@ -56,12 +56,14 @@ inquirer
                 console.table(res.rows);
                 if (role.length === 0) {
                     for (const row of res.rows) {
-                        role.push(new Role(row.id, row.title, row.salary, row.department_id));
+                        role.push(new Role(row.id, row.title, row.salary, row.department));
                     }
                 }
-                console.log(role);
+                // console.log(role);
                 performDuties();
              });
+        } else if (choices.viewALL === 'Add Role') { 
+            addRole();
         }
            else if (choices.viewALL === 'View All Departments') {
                 pool.query('SELECT * FROM department', (err: Error, res: QueryResult) => {
@@ -150,6 +152,41 @@ function addDepartment(): void {
             });
         });
     };
+
+function addRole(): void {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: `What is the employee's role?`,
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: `Enter the employee's salary:`,
+        },
+        {
+            type: 'list',
+            name: 'department',
+            message: 'Which department does the role belong to?',
+            choices: department.map((department) => department.name),
+        },
+    ])
+    .then((answers) => {
+        // console.log(answers.title, answers.salary, answers.department);
+     pool.query(`INSERT INTO role (id, title, salary, department) VALUES (${role.length+1}, '${answers.title}', ${answers.salary}, '${answers.department}')`, (err: Error, _res: QueryResult) => {
+        if (err) {
+            console.error('Error adding role:', err.name);
+            return;
+        }
+        console.log('Role added successfully.');
+        const newRole = new Role(role.length + 1, answers.title, answers.salary, answers.department);
+        role.push(newRole);
+        performDuties();
+    });
+    });
+};
 
 
 performDuties();
