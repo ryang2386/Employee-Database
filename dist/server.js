@@ -12,6 +12,51 @@ app.use(express.json());
 const department = [];
 const employee = [];
 const role = [];
+function departmentArray(department) {
+    pool.query('SELECT * FROM department', (err, res) => {
+        if (err) {
+            console.error('There is no department table.', err.name);
+            return;
+        }
+        else if (department.length === 0) {
+            for (const row of res.rows) {
+                department.push(new Department(row.id, row.name));
+            }
+        }
+        return department;
+    });
+}
+;
+function employeeArray(employee) {
+    pool.query('SELECT * FROM employee', (err, res) => {
+        if (err) {
+            console.error('There is no employee table.', err.name);
+            return;
+        }
+        else if (employee.length === 0) {
+            for (const row of res.rows) {
+                employee.push(new Employee(row.id, row.first_name, row.last_name, row.title, row.department, row.salary, row.manager));
+            }
+        }
+        return employee;
+    });
+}
+;
+function roleArray(role) {
+    pool.query('select * from role order by id ASC;', (err, res) => {
+        if (err) {
+            console.error('There is no role table.', err.name);
+            return;
+        }
+        else if (role.length === 0) {
+            for (const row of res.rows) {
+                role.push(new Role(row.id, row.title, row.salary, row.department));
+            }
+        }
+        return role;
+    });
+}
+;
 function performDuties() {
     inquirer
         .prompt([
@@ -24,18 +69,12 @@ function performDuties() {
     ])
         .then((choices) => {
         if (choices.viewALL === 'View All Employees') {
-            pool.query('select * from employee', (err, res) => {
+            pool.query('select * from employee order by id ASC;', (err, res) => {
                 if (err) {
                     console.error('There is no employee table.', err.name);
                     return;
                 }
                 console.table(res.rows);
-                if (employee.length === 0) {
-                    for (const row of res.rows) {
-                        employee.push(new Employee(row.id, row.first_name, row.last_name, row.title, row.department, row.salary, row.manager));
-                    }
-                }
-                // console.log(employee);
                 performDuties();
             });
         }
@@ -52,12 +91,6 @@ function performDuties() {
                     return;
                 }
                 console.table(res.rows);
-                if (role.length === 0) {
-                    for (const row of res.rows) {
-                        role.push(new Role(row.id, row.title, row.salary, row.department));
-                    }
-                }
-                // console.log(role);
                 performDuties();
             });
         }
@@ -65,17 +98,12 @@ function performDuties() {
             addRole();
         }
         else if (choices.viewALL === 'View All Departments') {
-            pool.query('SELECT * FROM department', (err, res) => {
+            pool.query('SELECT * FROM department order by id ASC;', (err, res) => {
                 if (err) {
                     console.error('There is no departments table.', err.name);
                     return;
                 }
                 console.table(res.rows);
-                if (department.length === 0) {
-                    for (const row of res.rows) {
-                        department.push(new Department(row.id, row.name));
-                    }
-                }
                 performDuties();
             });
         }
@@ -115,15 +143,19 @@ function addEmployee() {
         },
     ])
         .then((answers) => {
-        pool.query(`INSERT INTO employee (id, first_name, last_name, title, department, salary, manager) VALUES (${employee.length + 1}, '${answers.first_name}', '${answers.last_name}', '${answers.title}', '${answers.title}', ${employee.length}, '${answers.manager}')`, (err, _res) => {
-            if (err) {
-                console.error('Error adding employee:', err.name);
-                return;
+        role.forEach((role) => {
+            if (role.title === answers.title) {
+                pool.query(`INSERT INTO employee (id, first_name, last_name, title, department, salary, manager) VALUES (${employee.length + 1}, '${answers.first_name}', '${answers.last_name}', '${answers.title}', '${role.department}', ${role.salary}, '${answers.manager}')`, (err, _res) => {
+                    if (err) {
+                        console.error('Error adding employee:', err.name);
+                        return;
+                    }
+                    console.log('Employee added successfully.');
+                    const newEmployee = new Employee(employee.length + 1, answers.first_name, answers.last_name, answers.title, answers.title, employee.length + 1, answers.manager);
+                    employee.push(newEmployee);
+                    performDuties();
+                });
             }
-            console.log('Employee added successfully.');
-            const newEmployee = new Employee(employee.length + 1, answers.first_name, answers.last_name, answers.title, answers.title, employee.length + 1, answers.manager);
-            employee.push(newEmployee);
-            performDuties();
         });
     });
 }
@@ -138,7 +170,6 @@ function addDepartment() {
         },
     ])
         .then((answers) => {
-        // console.log(department.length + 1);
         pool.query(`INSERT INTO department (id, name) VALUES (${department.length + 1}, '${answers.department}')`, (err, _res) => {
             if (err) {
                 console.error('Error adding department:', err.name);
@@ -173,7 +204,6 @@ function addRole() {
         },
     ])
         .then((answers) => {
-        // console.log(answers.title, answers.salary, answers.department);
         pool.query(`INSERT INTO role (id, title, salary, department) VALUES (${role.length + 1}, '${answers.title}', ${answers.salary}, '${answers.department}')`, (err, _res) => {
             if (err) {
                 console.error('Error adding role:', err.name);
@@ -212,17 +242,30 @@ function updateEmployeeRole() {
                         return;
                     }
                     console.log('Employee role updated successfully.');
-                    performDuties();
+                    role.forEach((role) => {
+                        if (role.title === answers.title) {
+                            pool.query(`UPDATE employee SET department = '${role.department}', salary = ${role.salary} WHERE id = ${employee.id}`, (err, _res) => {
+                                if (err) {
+                                    console.error('Error updating employee role:', err.name);
+                                    return;
+                                }
+                                performDuties();
+                            });
+                        }
+                    });
                 });
             }
         });
     });
 }
 ;
-performDuties();
 app.use((_req, res) => {
     res.status(404).end();
 });
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+departmentArray(department);
+employeeArray(employee);
+roleArray(role);
+performDuties();
