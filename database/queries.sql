@@ -48,6 +48,7 @@ UPDATE role SET department = 'Finance' WHERE department_id = 4;
 UPDATE role SET department = 'Human Resources' WHERE department_id = 5;
 UPDATE role SET department = 'Project Management' WHERE department_id = 6;
 ALTER TABLE role DROP COLUMN department_id;
+-- delete from role where id = 11;
 
 select * from employee order by id ASC;
 select * from employee;

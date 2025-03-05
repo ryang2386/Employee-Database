@@ -19,7 +19,7 @@ function performDuties() {
             type: 'list',
             name: 'viewALL',
             message: 'What would you like to do?',
-            choices: ['View All Employees', 'Add Employee', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
+            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
         },
     ])
         .then((choices) => {
@@ -41,6 +41,9 @@ function performDuties() {
         }
         else if (choices.viewALL === 'Add Employee') {
             addEmployee();
+        }
+        else if (choices.viewALL === 'Update Employee Role') {
+            updateEmployeeRole();
         }
         else if (choices.viewALL === 'View All Roles') {
             pool.query('select * from role order by id ASC;', (err, res) => {
@@ -180,6 +183,38 @@ function addRole() {
             const newRole = new Role(role.length + 1, answers.title, answers.salary, answers.department);
             role.push(newRole);
             performDuties();
+        });
+    });
+}
+;
+function updateEmployeeRole() {
+    inquirer
+        .prompt([
+        {
+            type: 'list',
+            name: 'employee',
+            message: `Which employee's role would you like to update?`,
+            choices: employee.map((employee) => `${employee.first_name} ${employee.last_name}`),
+        },
+        {
+            type: 'list',
+            name: 'title',
+            message: `What is the employee's new role?`,
+            choices: role.map((role) => role.title),
+        },
+    ])
+        .then((answers) => {
+        employee.forEach((employee) => {
+            if (`${employee.first_name} ${employee.last_name}` === answers.employee) {
+                pool.query(`UPDATE employee SET title = '${answers.title}' WHERE id = ${employee.id}`, (err, _res) => {
+                    if (err) {
+                        console.error('Error updating employee role:', err.name);
+                        return;
+                    }
+                    console.log('Employee role updated successfully.');
+                    performDuties();
+                });
+            }
         });
     });
 }
