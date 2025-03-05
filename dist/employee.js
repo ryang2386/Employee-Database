@@ -1,5 +1,5 @@
 class Employee {
-    constructor(id, first_name, last_name, role_id, manager_id) {
+    constructor(id, first_name, last_name, title, department, salary, manager) {
         Object.defineProperty(this, "id", {
             enumerable: true,
             configurable: true,
@@ -18,13 +18,25 @@ class Employee {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "role_id", {
+        Object.defineProperty(this, "title", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "manager_id", {
+        Object.defineProperty(this, "department", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "salary", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "manager", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -33,8 +45,10 @@ class Employee {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
-        this.role_id = role_id;
-        this.manager_id = manager_id;
+        this.title = title;
+        this.department = department;
+        this.salary = salary;
+        this.manager = manager;
     }
 }
 export { Employee };

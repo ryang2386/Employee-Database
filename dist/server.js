@@ -24,7 +24,7 @@ function performDuties() {
     ])
         .then((choices) => {
         if (choices.viewALL === 'View All Employees') {
-            pool.query('SELECT * FROM employee', (err, res) => {
+            pool.query('select * from employee', (err, res) => {
                 if (err) {
                     console.error('There is no employee table.', err.name);
                     return;
@@ -32,7 +32,7 @@ function performDuties() {
                 console.table(res.rows);
                 if (employee.length === 0) {
                     for (const row of res.rows) {
-                        employee.push(new Employee(row.id, row.first_name, row.last_name, row.role_id, row.manager_id));
+                        employee.push(new Employee(row.id, row.first_name, row.last_name, row.title, row.department, row.salary, row.manager));
                     }
                 }
                 console.log(employee);
@@ -96,24 +96,26 @@ function addEmployee() {
             message: 'Enter last name:',
         },
         {
-            type: 'input',
-            name: 'role_id',
-            message: 'Enter role id:',
+            type: 'list',
+            name: 'title',
+            message: `What is the employee's role?`,
+            choices: role.map((role) => role.title),
         },
         {
-            type: 'input',
-            name: 'manager_id',
-            message: 'Enter manager id:',
+            type: 'list',
+            name: 'manager',
+            message: `Who is the employee's manager?`,
+            choices: ['Ryan Gayle', 'Kyra Davis', 'Derrick Jones', 'Shawn Booker'],
         },
     ])
         .then((answers) => {
-        pool.query(`INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES (${employee.length + 1}, '${answers.first_name}', '${answers.last_name}', ${answers.role_id}, ${answers.manager_id})`, (err, _res) => {
+        pool.query(`INSERT INTO employee (id, first_name, last_name, title, department, salary, manager) VALUES (${employee.length + 1}, '${answers.first_name}', '${answers.last_name}', '${answers.title}', '${answers.title}', ${employee.length}, '${answers.manager}')`, (err, _res) => {
             if (err) {
                 console.error('Error adding employee:', err.name);
                 return;
             }
             console.log('Employee added successfully.');
-            const newEmployee = new Employee(employee.length + 1, answers.first_name, answers.last_name, employee.length + 1, answers.manager_id);
+            const newEmployee = new Employee(employee.length + 1, answers.first_name, answers.last_name, answers.title, answers.title, employee.length + 1, answers.manager);
             employee.push(newEmployee);
             performDuties();
         });

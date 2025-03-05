@@ -28,22 +28,8 @@ INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES
 (8, 'Kyra', 'Davis', 8, NULL),
 (9, 'Derrick', 'Jones', 9, NULL);
 
-SELECT * FROM department;
-SELECT * FROM role;
-SELECT * FROM employee;
 
-SELECT first_name, last_name FROM employee;
+ 
 
--- INSERT INTO employee (id, first_name, last_name, role_id, manager_id) VALUES
--- (10, 'John', 'Doe', 4, 4);
 
-DELETE FROM employee WHERE id = 10;
 
-DELETE FROM department WHERE id = 10;
-
--- replace manager_id with the employee's name by id in the employee table
--- SELECT e.id, e.first_name, e.last_name, r.title, d.name, r.salary AS department, CONCAT(m.first_name, ' ', m.last_name) AS manager
--- FROM employee e
--- LEFT JOIN role r ON e.role_id = r.id
--- LEFT JOIN department d ON r.department_id = d.id
--- LEFT JOIN employee m ON e.manager_id = m.id;
