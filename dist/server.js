@@ -13,9 +13,9 @@ const department = [];
 const employee = [];
 const role = [];
 function departmentArray(department) {
-    pool.query('SELECT * FROM department', (err, res) => {
+    pool.query('SELECT * FROM department order by id ASC;', (err, res) => {
         if (err) {
-            console.error('There is no department table.', err.name);
+            console.error('There are no departments.', err.name);
             return;
         }
         else if (department.length === 0) {
@@ -28,9 +28,9 @@ function departmentArray(department) {
 }
 ;
 function employeeArray(employee) {
-    pool.query('SELECT * FROM employee', (err, res) => {
+    pool.query('SELECT * FROM employee order by id ASC;', (err, res) => {
         if (err) {
-            console.error('There is no employee table.', err.name);
+            console.error('There are no employees.', err.name);
             return;
         }
         else if (employee.length === 0) {
@@ -45,7 +45,7 @@ function employeeArray(employee) {
 function roleArray(role) {
     pool.query('select * from role order by id ASC;', (err, res) => {
         if (err) {
-            console.error('There is no role table.', err.name);
+            console.error('There are no roles.', err.name);
             return;
         }
         else if (role.length === 0) {
