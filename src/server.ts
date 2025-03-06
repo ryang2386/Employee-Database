@@ -14,10 +14,12 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// creating arrays to store data from the department, employee, and role tables
 const department: Department[] = [];
 const employee: Employee[] = [];
 const role: Role[] = [];
 
+// function to get data from the department table and store it in the department array
 function departmentArray(department: Department[]): void {
     pool.query('SELECT * FROM department order by id ASC;', (err: Error, res: QueryResult) => { 
         if (err) {
@@ -32,6 +34,7 @@ function departmentArray(department: Department[]): void {
     });
 };
 
+// function to get data from the employee table and store it in the employee array
 function employeeArray(employee: Employee[]): void {
     pool.query('SELECT * FROM employee order by id ASC;', (err: Error, res: QueryResult) => { 
         if (err) {
@@ -46,6 +49,7 @@ function employeeArray(employee: Employee[]): void {
     });
 };
 
+// function to get data from the role table and store it in the role array
 function roleArray(role: Role[]): void {
     pool.query('select * from role order by id ASC;', (err: Error, res: QueryResult) => { 
         if (err) {
@@ -60,6 +64,7 @@ function roleArray(role: Role[]): void {
     });
 };
 
+// function used to perform different duties based on user input
 function performDuties(): void {
 inquirer
   .prompt([
@@ -71,6 +76,7 @@ inquirer
     },
     ])
     .then((choices) => {
+        // statements on what to do based on user input
         if (choices.viewALL === 'View All Employees') {
             pool.query('select * from employee order by id ASC;', (err: Error, res: QueryResult) => {
                 if (err) {
@@ -117,6 +123,7 @@ inquirer
                  });
             };
 
+// function to add an employee to the employee table
 function addEmployee(): void {
     inquirer
     .prompt([
@@ -146,12 +153,14 @@ function addEmployee(): void {
     .then((answers) => {
         role.forEach((role) => {
             if (role.title === answers.title) {
+                // adds employee to the employee table
                 pool.query(`INSERT INTO employee (id, first_name, last_name, title, department, salary, manager) VALUES (${employee.length+1}, '${answers.first_name}', '${answers.last_name}', '${answers.title}', '${role.department}', ${role.salary}, '${answers.manager}')`, (err: Error, _res: QueryResult) => {
                     if (err) {
                         console.error('Error adding employee:', err.name);
                         return;
                     }
                     console.log('Employee added successfully.');
+                    // adds employee to the employee array
                     const newEmployee = new Employee(employee.length +1, answers.first_name, answers.last_name, answers.title, answers.title, employee.length+1, answers.manager);
                     employee.push(newEmployee);
                     performDuties();
@@ -161,6 +170,7 @@ function addEmployee(): void {
         });
     };
 
+// function to add a department to the department table
 function addDepartment(): void {
     inquirer
     .prompt([
@@ -171,12 +181,14 @@ function addDepartment(): void {
         },
     ])
         .then((answers) => {
+            // adds department to the department table
             pool.query(`INSERT INTO department (id, name) VALUES (${department.length +1}, '${answers.department}')`, (err: Error, _res: QueryResult) => {
                 if (err) {
                     console.error('Error adding department:', err.name);
                     return;
                 }
                 console.log('Department added successfully.');
+                // adds department to the department array
                 const newDepartment = new Department(department.length + 1, answers.department);
                 department.push(newDepartment);
                 performDuties();
@@ -184,6 +196,7 @@ function addDepartment(): void {
         });
     };
 
+// function to add a role to the role table
 function addRole(): void {
     inquirer
     .prompt([
@@ -205,12 +218,14 @@ function addRole(): void {
         },
     ])
     .then((answers) => {
+    // adds role to the role table
      pool.query(`INSERT INTO role (id, title, salary, department) VALUES (${role.length+1}, '${answers.title}', ${answers.salary}, '${answers.department}')`, (err: Error, _res: QueryResult) => {
         if (err) {
             console.error('Error adding role:', err.name);
             return;
         }
         console.log('Role added successfully.');
+        // adds role to the role array
         const newRole = new Role(role.length + 1, answers.title, answers.salary, answers.department);
         role.push(newRole);
         performDuties();
@@ -218,6 +233,7 @@ function addRole(): void {
     });
 };
 
+// function to update an employee's role
 function updateEmployeeRole(): void {
     inquirer
     .prompt([
@@ -237,6 +253,7 @@ function updateEmployeeRole(): void {
     .then((answers) => {
      employee.forEach((employee) => {
         if (`${employee.first_name} ${employee.last_name}` === answers.employee) {
+            // updates employee role in the employee table
             pool.query(`UPDATE employee SET title = '${answers.title}' WHERE id = ${employee.id}`, (err: Error, _res: QueryResult) => {
                 if (err) {
                     console.error('Error updating employee role:', err.name);
@@ -245,6 +262,7 @@ function updateEmployeeRole(): void {
                 console.log('Employee role updated successfully.');
     role.forEach((role) => {
         if (role.title === answers.title) {
+            // updates employee's department and salary in the employee table to match the new role
             pool.query(`UPDATE employee SET department = '${role.department}', salary = ${role.salary} WHERE id = ${employee.id}`, (err: Error, _res: QueryResult) => {
                 if (err) {
                     console.error('Error updating employee role:', err.name);
@@ -269,7 +287,9 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
+// adds data from the department, employee, and role tables to the department, employee, and role arrays
 departmentArray(department);
 employeeArray(employee);
 roleArray(role);
+// calls the performDuties function to start the app
 performDuties();

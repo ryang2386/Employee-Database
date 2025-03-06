@@ -1,3 +1,4 @@
+-- inserting data into the tables
 INSERT INTO department (id, name) VALUES
 (1, 'Marketing'),
 (2, 'Software Development'),

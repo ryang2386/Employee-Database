@@ -1,3 +1,4 @@
+//created an Employee class to store data from the employee table
 class Employee {
     id: number;
     first_name: string;

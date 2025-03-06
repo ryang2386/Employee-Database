@@ -1,5 +1,5 @@
 ALTER TABLE employee ADD COLUMN title VARCHAR(100);
--- insert values into title column on employee table based on role_title
+-- insert values into title column on employee table based on role_title using role_id
 UPDATE employee SET title = 'Marketing Manager' WHERE role_id = 1;
 UPDATE employee SET title = 'SEO Coordinator' WHERE role_id = 2;
 UPDATE employee SET title = 'Software Developer' WHERE role_id = 3;
@@ -48,7 +48,6 @@ UPDATE role SET department = 'Finance' WHERE department_id = 4;
 UPDATE role SET department = 'Human Resources' WHERE department_id = 5;
 UPDATE role SET department = 'Project Management' WHERE department_id = 6;
 ALTER TABLE role DROP COLUMN department_id;
--- delete from department where id = 7;
 
 select * from employee order by id ASC;
 select * from employee;

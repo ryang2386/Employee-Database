@@ -1,6 +1,8 @@
 -- Active: 1740443577494@@127.0.0.1@5432@employees_db
+-- creates new database
 CREATE DATABASE employees_db;
 
+-- creates department, role, and employee tables
 CREATE TABLE department (
     id SERIAL PRIMARY KEY,
     name VARCHAR(30) UNIQUE NOT NULL
