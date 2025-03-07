@@ -1,3 +1,4 @@
+// creating Department class to store data from the department table
 class Department {
     constructor(id, name) {
         Object.defineProperty(this, "id", {

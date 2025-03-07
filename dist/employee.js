@@ -1,3 +1,4 @@
+//created an Employee class to store data from the employee table
 class Employee {
     constructor(id, first_name, last_name, title, department, salary, manager) {
         Object.defineProperty(this, "id", {

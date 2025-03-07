@@ -1,3 +1,4 @@
+// created a Role class to store data from the role table
 class Role {
     constructor(id, title, salary, department) {
         Object.defineProperty(this, "id", {

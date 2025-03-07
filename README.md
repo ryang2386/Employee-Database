@@ -24,7 +24,7 @@ Need a fast and efficient way to store information about the employees that work
 First, make sure Typescript is installed by typing "npm install -D typescript" in your terminal. Once Typescript is installed, make sure to install packages dotenv, pg, inquirer, and express. This can be done by typing "npm i (package name)" in your terminal for each. After you've installed the necessary packages, type "npm run build" to compile the program, then type "npm run start" to run the program.
 
  ## Usage
-This project can be used by anyone who needs a simple database to store information about their employees, their roles, and the departments their company currently has. Also, there are functions that allow you to add an employee, update an employee role, add a role, and add a department. For an example of how this program is used, please view the sample video here: https://drive.google.com/file/d/1kVaAvtkaRLg7Hl3XmiC_dpgVcXzo2lBe/view
+This project can be used by anyone who needs a simple database to store information about their employees, their roles, and the departments their company currently has. Also, there are functions that allow you to add an employee, update an employee role, add a role, and add a department. For an example of how this program is used, please view the sample video here: https://drive.google.com/file/d/1ljlt_CBMpXZlEHQEhYdJy9OT2nDAjvwO/view
 
  ## Contribution
  Contributions are always welcome. I'm always open to ideas on how to improve my projects, so please feel free to fork the repo and create a pull request! Also, thank you to W3Schools for helping me with the SQL code I needed to make this program work successfully!
